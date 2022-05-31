@@ -46,3 +46,7 @@ argocd app get my-helm-guestbook
 
 #sync (deploy) the app in the cluster
 argocd app sync my-helm-guestbook
+
+##posibili attività
+argocd app set my-helm-guestbook -p replicaCount=1  #in questo momento l'app su argo va in out of sync
+argocd app sync my-helm-guestbook                   #applica la modifica al cluster e va in sync
