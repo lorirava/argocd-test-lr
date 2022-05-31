@@ -1,0 +1,48 @@
+#installazione
+kubectl create namespace argocd
+helm repo add argo https://argoproj.github.io/argo-helm
+helm upgrade my-argo-cd argo/argo-cd -n argocd -f values-injenia.yaml
+kubectl config set-context --current --namespace=argocd
+
+#install argo CLI
+curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+chmod +x /usr/local/bin/argocd
+
+
+
+#first admin psw
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
+#login via CLI and update admin pwd
+argocd login --core
+argocd account update-password
+
+#delete secret for initial admin pwd
+kubectl delete secret argocd-initial-admin-secret
+
+#attivare port-forward per accedere alla UI se privato
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+#da browser
+https://localhost:8080
+admin / adminInjenia
+
+##collegare cluster esterno dove girano/gireranno le applicazioni
+#1#Listo i nomi dei cluster che ho in context
+kubectl config get-contexts -o name
+#2#Aggiunta del cluster ad argo
+argocd cluster add gke_formazione-lorenzo-rava_europe-west1-b_cluster-lrav-31052022
+#3#Verifica da CLI
+argocd cluster list -o json
+
+#aggiungo repo git ad argo
+argocd repo add https://github.com/lorirava/argocd-example-apps.git
+
+#installo app
+argocd app create my-helm-guestbook --repo https://github.com/lorirava/argocd-example-apps.git --path helm-guestbook --dest-server https://35.195.174.100 --dest-namespace default --helm-set replicaCount=2
+
+#status dell'app via CLI
+argocd app get my-helm-guestbook
+
+#sync (deploy) the app in the cluster
+argocd app sync my-helm-guestbook
