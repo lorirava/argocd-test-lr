@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: europe-west1-docker.pkg.dev/injenia-artifact/in-docker/argocd/app-test
-  tag: 0.1
+  tag: 0.2
   pullPolicy: IfNotPresent
 
 service:
