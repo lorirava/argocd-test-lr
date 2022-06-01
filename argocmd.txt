@@ -55,3 +55,11 @@ argocd app unset my-helm-guestbook -p replicaCount
 
 #se non settato prima, setta un values file come riferimento
 argocd app set my-helm-guestbook --values values-production.yaml
+
+
+
+
+
+
+##NEW app --values values-stg.yaml
+rgocd app create my-stg-helm-guestbook --repo https://github.com/lorirava/argocd-test-lr.git --path helm-guestbook --dest-server https://35.195.174.100 --dest-namespace stg --values values-stg.yaml
