@@ -38,8 +38,8 @@ argocd cluster list -o json
 #aggiungo repo git ad argo
 argocd repo add https://github.com/lorirava/argocd-example-apps.git
 
-#installo app
-argocd app create my-helm-guestbook --repo https://github.com/lorirava/argocd-example-apps.git --path helm-guestbook --dest-server https://35.195.174.100 --dest-namespace default --helm-set replicaCount=2
+#installo app e lo mette in ascolto sul values-production.yaml
+argocd app create my-helm-guestbook --repo https://github.com/lorirava/argocd-test-lr.git --path helm-guestbook --dest-server https://35.195.174.100 --dest-namespace default --values values-production.yaml
 
 #status dell'app via CLI
 argocd app get my-helm-guestbook
@@ -48,5 +48,10 @@ argocd app get my-helm-guestbook
 argocd app sync my-helm-guestbook
 
 ##posibili attività
+#setta un parametro. questo verrà ignoratp dal values-production.yaml
 argocd app set my-helm-guestbook -p replicaCount=1  #in questo momento l'app su argo va in out of sync
-argocd app sync my-helm-guestbook                   #applica la modifica al cluster e va in sync
+#per revertare il comando sopra
+argocd app unset my-helm-guestbook -p replicaCount
+
+#se non settato prima, setta un values file come riferimento
+argocd app set my-helm-guestbook --values values-production.yaml
