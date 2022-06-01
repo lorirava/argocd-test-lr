@@ -1,5 +1,3 @@
 replicaCount: 1
 #service:
 #  type: LoadBalancer
-image:
-  tag: 0.1
